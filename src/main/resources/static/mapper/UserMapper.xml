@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.UserMapper">
+	<resultMap id="BaseResultMap" type="com.example.pojo.User">
+		<id column="userName" jdbcType="VARCHAR" property="userName" />
+		<result column="pwd" jdbcType="VARCHAR" property="pwd" />
+		<result column="regAge" jdbcType="INTEGER" property="regAge" />
+		<result column="regSex" jdbcType="VARCHAR" property="regSex" />
+		<result column="regEmail" jdbcType="VARCHAR"
+			property="regEmail" />
+		<result column="regPhoto" jdbcType="VARCHAR"
+			property="regPhoto" />
+		<result column="userType" jdbcType="VARCHAR"
+			property="userType" />
+		<result column="regTime" jdbcType="TIMESTAMP"
+			property="regTime" />
+		<result column="loginTime" jdbcType="TIMESTAMP"
+			property="loginTime" />
+	</resultMap>
+
+	<!-- 登录 -->
+	<select id="login" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		select pwd from users where userName = #{userName}
+	</select>
+
+
+	<!-- 注册 -->
+	<insert id="register">
+		insert into
+		users(userName,pwd,regAge,regSex,regEmail,userType,regTime,regPhoto)
+		values(#{userName},#{pwd},#{regAge},#{regSex},#{regEmail},#{userType},#{regTime},#{regPhoto});
+	</insert>
+
+	<!-- 注册时用户名是否存在 -->
+	<select id="isExist" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		select count(*) from users where userName = #{userName}
+	</select>
+
+	<!-- 记录登录时间 -->
+	<update id="addLoginTime">
+		update users set loginTime = #{loginTime} where
+		userName = #{userName}
+	</update>
+
+	<!-- 个人设置 -->
+	<update id="userSetting">
+		update users set regSex =
+		#{sex},regAge=#{age},regEmail=#{email} where
+		userName = #{userName}
+	</update>
+
+	<!-- 查询用户列表 -->
+	<select id="getUserList" resultMap="BaseResultMap">
+		select * from users where
+		userType = 1 limit #{index},#{pageSize}
+	</select>
+
+	<!-- 获取用户总数 -->
+	<select id="getUserCount" resultType="java.lang.Integer">
+		select count(*) from users
+		where userType = 1
+	</select>
+
+	<!-- 删除用户 -->
+	<delete id="deleteUser" parameterType="java.lang.String">
+		delete from users where
+		userName = #{userName}
+	</delete>
+
+	<!-- 修改用户 -->
+	<update id="edituser">
+		update users set pwd = #{password},regSex =
+		#{sex},regAge=#{age},regEmail=#{email},userType=#{userType} where
+		userName = #{userName}
+	</update>
+
+	<!-- 获取用户密码 -->
+	<select id="getPassword" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		select pwd from users where userName = #{userName}
+	</select>
+
+	<!-- 修改用户密码 -->
+	<update id="editPassword" parameterType="java.lang.String">
+		update users set pwd =
+		#{newPassword} where userName = #{userName}
+	</update>
+
+	<!-- 根据用户名查询 -->
+	<select id="selectUser" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select * from users where userName = #{userName}
+	</select>
+
+
+	<!-- 获取用户类型 -->
+	<select id="getUserType" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		select userType from users where userName = #{userName}
+	</select>
+
+	<!-- 上传头像 -->
+	<update id="updatePhoto">
+		update users set regPhoto = #{regPhoto} where
+		userName = #{userName}
+	</update>
+
+
+
+
+
+
+
+
+</mapper>

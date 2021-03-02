@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.SupplierMapper">
+
+	<!-- 注册供货商 -->
+	<insert id="insertSupplier" parameterType="Supplier">
+		insert
+		into supplier
+		(supplierID,supplierName,supplierAddress,tele,principal,supplierDetails,registTime)
+		values(#{supplierID},#{supplierName},#{supplierAddress},#{tele},#{principal},#{supplierDetails},#{registTime})
+	</insert>
+
+	<!-- 根据供货商Id删除供货商 -->
+	<delete parameterType="java.lang.String" 
+			id="deleteSupplierByID">
+		delete from supplier
+		where supplierID = #{supplierID}
+	</delete>
+
+	<!-- 对所有供货商进行列表显示 -->
+	<select id="selectAllSuppliers" resultMap="allSuppliers">
+		select supplierID,supplierName,supplierAddress,tele,principal,supplierDetails,registTime
+		from supplier
+	</select>
+	<resultMap type="Supplier" id="allSuppliers">
+		<id column="supplierID" property="supplierID"></id>
+		<result column="supplierName" property="supplierName" />
+		<result column="supplierAddress" property="supplierAddress" />
+		<result column="tele" property="tele" />
+		<result column="principal" property="principal" />
+		<result column="supplierDetails" property="supplierDetails" />
+		<result column="registTime" property="registTime" />
+	</resultMap>
+
+
+	<!-- 根据供货商ID查询供货商信息 -->
+	<select resultMap="allSuppliers" parameterType="java.lang.String"
+		id="selectSupplierBySupplierID">
+		select
+		supplierID,supplierName,supplierAddress,tele,principal,supplierDetails,registTime
+		from supplier
+		where supplierID = #{supplierID}
+	</select>
+	
+	<!-- 根据供货商名称查询供货商信息 -->
+	<select resultMap="allSuppliers" parameterType="java.lang.String"
+		id="selectSuppliersBySupplierName">
+		select
+		supplierID,supplierName,supplierAddress,tele,principal,supplierDetails,registTime
+		from supplier
+		where supplierName = #{supplierName}
+	</select>
+	
+	
+
+	<!-- 修改供货商信息 -->
+	<update id="updateSupplier">
+		update supplier
+		<set>
+			<if test="supplierID !=null">
+				supplierID=#{supplierID},
+			</if>
+			<if test="supplierName !=null">
+				supplierName=#{supplierName},
+			</if>
+			<if test="supplierAddress !=null">
+				supplierAddress=#{supplierAddress},
+			</if>
+			<if test="tele !=null">
+				tele=#{tele},
+			</if>
+			<if test="principal !=null">
+				principal=#{principal},
+			</if>
+			<if test="supplierDetails !=null">
+				supplierDetails=#{supplierDetails},
+			</if>
+			<if test="registTime !=null">
+				registTime=#{registTime},
+			</if>
+		</set>
+		where supplierID =
+		#{supplierID}
+	</update>
+</mapper>

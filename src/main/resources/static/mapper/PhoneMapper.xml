@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.PhoneMapper">
+	<!-- 新增商品 -->
+	<insert id="insertPhone" parameterType="Phone">
+		insert
+		into phone
+		(phoneID,phoneName,phoneBrand,typeNumber,sellingPrice,purchasingPrice,phonePicture,phoneDetails,phoneFunction,phoneColor,remains,productTime,phoneState,supplierID,reposID)
+		values(#{phoneID},#{phoneName},#{phoneBrand},#{typeNumber},#{sellingPrice},#{purchasingPrice},#{phonePicture},#{phoneDetails},#{phoneFunction},#{phoneColor},#{remains},#{productTime},#{phoneState},#{supplierID},#{reposID})
+	</insert>
+
+	<!-- 根据商品Id删除一篇商品 -->
+	<delete parameterType="java.lang.String" 
+			id="deletePhoneByID">
+		delete from phone
+		where phoneID = #{phoneID}
+	</delete>
+
+	<!-- 对所有商品进行列表显示 -->
+	<select id="selectAllPhones" resultMap="allPhones">
+		select phoneID,phoneName,phoneBrand,typeNumber,sellingPrice,purchasingPrice,phonePicture,phoneDetails,phoneFunction,phoneColor,remains,productTime,phoneState,supplierID,reposID
+		from phone
+	</select>
+	<resultMap type="Phone" id="allPhones">
+		<id column="phoneID" property="phoneID"></id>
+		<result column="phoneName" property="phoneName" />
+		<result column="phoneBrand" property="phoneBrand" />
+		<result column="typeNumber" property="typeNumber" />
+		<result column="sellingPrice" property="sellingPrice" />
+		<result column="purchasingPrice" property="purchasingPrice" />
+		<result column="phonePicture" property="phonePicture" />
+		<result column="phoneDetails" property="phoneDetails"></result>
+		<result column="phoneFunction" property="phoneFunction" />
+		<result column="phoneColor" property="phoneColor" />
+		<result column="remains" property="remains" />
+		<result column="productTime" property="productTime"></result>
+		<result column="phoneState" property="phoneState" />
+		<result column="supplierID" property="supplierID" />
+		<result column="reposID" property="reposID" />
+		<association column="supplierID" property="supplier" javaType="Supplier" select="supplierOfPhones">
+		</association>
+	</resultMap>
+	<select id="supplierOfPhones" resultMap="supplierOnePhone">
+		select * from supplier where supplierID = #{supplierID}
+	</select>
+	<resultMap type="Supplier" id="supplierOnePhone">
+		<id column="supplierID" property="supplierID"></id>
+		<result column="supplierName" property="supplierName" />
+		<result column="supplierAddress" property="supplierAddress" />
+		<result column="tele" property="tele" />
+		<result column="principal" property="principal" />
+		<result column="supplierDetails" property="supplierDetails" />
+		<result column="registTime" property="registTime" />
+	</resultMap>
+
+
+	<!-- 根据商品ID查看商品及供货商信息 -->
+	<select resultMap="allPhones" parameterType="java.lang.String"
+		id="selectPhoneByPhoneID">
+		select
+		phoneID,phoneName,phoneBrand,typeNumber,sellingPrice,purchasingPrice,phonePicture,phoneDetails,phoneFunction,phoneColor,remains,productTime,phoneState,supplierID,reposID
+		from phone
+		where phoneID = #{phoneID}
+	</select>
+	
+	<!-- 根据商品名称查看商品及供货商信息 -->
+	<select resultMap="allPhones" parameterType="java.lang.String"
+		id="selectPhonesByPhoneName">
+		select
+		phoneID,phoneName,phoneBrand,typeNumber,sellingPrice,purchasingPrice,phonePicture,phoneDetails,phoneFunction,phoneColor,remains,productTime,phoneState,supplierID,reposID
+		from phone
+		where phoneName = #{phoneName}
+	</select>
+	
+	<!-- 根据商品品牌(类型)查看商品及供货商信息 -->
+	<select resultMap="allPhones" parameterType="java.lang.String"
+		id="selectPhonesByPhoneBrand">
+		select
+		phoneID,phoneName,phoneBrand,typeNumber,sellingPrice,purchasingPrice,phonePicture,phoneDetails,phoneFunction,phoneColor,remains,productTime,phoneState,supplierID,reposID
+		from phone
+		where phoneBrand = #{phoneBrand}
+	</select>
+	
+	<!-- 根据商品型号查看商品及供货商信息 -->
+	<select resultMap="allPhones" parameterType="java.lang.String"
+		id="selectPhonesByTypeNumber">
+		select
+		phoneID,phoneName,phoneBrand,typeNumber,sellingPrice,purchasingPrice,phonePicture,phoneDetails,phoneFunction,phoneColor,remains,productTime,phoneState,supplierID,reposID
+		from phone
+		where typeNumber = #{typeNumber}
+	</select>
+	
+	<!-- 根据商品颜色查看商品及供货商信息 -->
+	<select resultMap="allPhones" parameterType="java.lang.String"
+		id="selectPhoneByPhonesColor">
+		select
+		phoneID,phoneName,phoneBrand,typeNumber,sellingPrice,purchasingPrice,phonePicture,phoneDetails,phoneFunction,phoneColor,remains,productTime,phoneState,supplierID,reposID
+		from phone
+		where phoneColor = #{phoneColor}
+	</select>
+	
+	<!-- 根据商品状态查看商品及供货商信息 -->
+	<select resultMap="allPhones" parameterType="java.lang.String"
+		id="selectPhonesByPhoneState">
+		select
+		phoneID,phoneName,phoneBrand,typeNumber,sellingPrice,purchasingPrice,phonePicture,phoneDetails,phoneFunction,phoneColor,remains,productTime,phoneState,supplierID,reposID
+		from phone
+		where phoneState = #{phoneState}
+	</select>
+	
+	<!-- 查询一个供货商的所有商品 -->
+	<select resultMap="allPhones" parameterType="java.lang.String"
+		id="selectPhonesOfOneSupplier">
+		select
+		phoneID,phoneName,phoneBrand,typeNumber,sellingPrice,purchasingPrice,phonePicture,phoneDetails,phoneFunction,phoneColor,remains,productTime,phoneState,supplierID,reposID
+		from phone
+		where supplierID = #{supplierID}
+		
+	</select>
+	
+	<!-- 查询一个仓库的所有商品 -->
+	<select resultMap="allPhones" parameterType="java.lang.String"
+		id="selectPhonesInRepository">
+		select
+		phoneID,phoneName,phoneBrand,typeNumber,sellingPrice,purchasingPrice,phonePicture,phoneDetails,phoneFunction,phoneColor,remains,productTime,phoneState,supplierID,reposID
+		from phone
+		where reposID = #{reposID}
+	</select>
+	
+
+	<!-- 修改一件商品信息 -->
+	<update id="updatePhoneByPhoneID">
+		update phone
+		<set>
+			<if test="phoneID !=null">
+				phoneID=#{phoneID},
+			</if>
+			<if test="phoneName !=null">
+				phoneName=#{phoneName},
+			</if>
+			<if test="phoneBrand !=null">
+				phoneBrand=#{phoneBrand},
+			</if>
+			<if test="typeNumber !=null">
+				typeNumber=#{typeNumber},
+			</if>
+			<if test="sellingPrice !=null">
+				sellingPrice=#{sellingPrice},
+			</if>
+			<if test="purchasingPrice !=null">
+				purchasingPrice=#{purchasingPrice},
+			</if>
+			<if test="phonePicture !=null">
+				phonePicture=#{phonePicture},
+			</if>
+			<if test="phoneDetails !=null">
+				phoneDetails=#{phoneDetails},
+			</if>
+			<if test="phoneFunction !=null">
+				phoneFunction=#{phoneFunction},
+			</if>
+			<if test="phoneColor !=null">
+				phoneColor=#{phoneColor},
+			</if>
+			<if test="remains !=null">
+				remains=#{remains},
+			</if>
+			<if test="productTime !=null">
+				productTime=#{productTime},
+			</if>
+			<if test="phoneState !=null">
+				phoneState=#{phoneState},
+			</if>
+			<if test="supplierID !=null">
+				supplierID=#{supplierID},
+			</if>
+			<if test="reposID !=null">
+				reposID=#{reposID},
+			</if>
+			
+		</set>
+		where phoneID = #{phoneID}
+	</update>
+	
+	<!-- 根据商品名称可进行批量修改 -->
+	<update id="updatePhonesByPhoneName">
+		update phone
+		<set>
+			<if test="phoneID !=null">
+				phoneID=#{phoneID},
+			</if>
+			<if test="phoneName !=null">
+				phoneName=#{phoneName},
+			</if>
+			<if test="phoneBrand !=null">
+				phoneBrand=#{phoneBrand},
+			</if>
+			<if test="typeNumber !=null">
+				typeNumber=#{typeNumber},
+			</if>
+			<if test="sellingPrice !=null">
+				sellingPrice=#{sellingPrice},
+			</if>
+			<if test="purchasingPrice !=null">
+				purchasingPrice=#{purchasingPrice},
+			</if>
+			<if test="phonePicture !=null">
+				phonePicture=#{phonePicture},
+			</if>
+			<if test="phoneDetails !=null">
+				phoneDetails=#{phoneDetails},
+			</if>
+			<if test="phoneFunction !=null">
+				phoneFunction=#{phoneFunction},
+			</if>
+			<if test="phoneColor !=null">
+				phoneColor=#{phoneColor},
+			</if>
+			<if test="remains !=null">
+				remains=#{remains},
+			</if>
+			<if test="productTime !=null">
+				productTime=#{productTime},
+			</if>
+			<if test="phoneState !=null">
+				phoneState=#{phoneState},
+			</if>
+			<if test="supplierID !=null">
+				supplierID=#{supplierID},
+			</if>
+			<if test="reposID !=null">
+				reposID=#{reposID},
+			</if>
+			
+		</set>
+		where phoneName = #{phoneName}
+	</update>
+</mapper>

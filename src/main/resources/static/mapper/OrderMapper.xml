@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.OrderMapper">
+
+<!-- 
+	int updateOrder(Order order);
+ -->
+	<!-- 下订单 -->
+	<insert id="insertOrder" parameterType="Order">
+		insert
+		into `order`
+		(orderID,phoneID,supplierID,userName,receiverID,orderCount,orderState,paymentState,orderTime,totalPrice,transPrice,orderDetails)
+		values(#{orderID},#{phoneID},#{supplierID},#{userName},#{receiverID},#{orderCount},#{orderState},#{paymentState},#{orderTime},#{totalPrice},#{transPrice},#{orderDetails})
+	</insert>
+
+	<!-- 删除取消订单 -->
+	<delete parameterType="java.lang.String" 
+			id="deleteOrderByOrderID">
+		delete from `order`
+		where orderID = #{orderID}
+	</delete>
+
+	<!-- 对所有订单进行列表显示 -->
+	<select id="selectAllOrders" resultMap="allOrders">
+		select orderID,phoneID,supplierID,userName,receiverID,orderCount,orderState,paymentState,orderTime,totalPrice,transPrice,orderDetails
+		from `order`
+	</select>
+	<resultMap type="Order" id="allOrders">
+		<id column="orderID" property="orderID"></id>
+		<result column="phoneID" property="phoneID" />
+		<result column="supplierID" property="supplierID" />
+		<result column="userName" property="userName" />
+		<result column="receiverID" property="receiverID" />
+		<result column="orderCount" property="orderCount" />
+		<result column="orderState" property="orderState" />
+		<result column="paymentState" property="paymentState"></result>
+		<result column="orderTime" property="orderTime" />
+		<result column="totalPrice" property="totalPrice" />
+		<result column="transPrice" property="transPrice"></result>
+		<result column="orderDetails" property="orderDetails" />
+		<association column="userName" property="register" javaType="Register" select="userOfOrder">
+		</association>
+		<association column="phoneID" property="phone" javaType="Phone" select="phoneOfOrder">
+		</association>
+		<association column="receiverID" property="receiver" javaType="Receiver" select="selectAllReceivers">
+		</association>
+		<association column="supplierID" property="supplier" javaType="Supplier" select="supplierOfPhones">
+		</association>
+	</resultMap>
+	<select id="userOfOrder" resultMap="usersOneOrder">
+		select * from register where userName = #{userName}
+	</select>
+	<resultMap type="Register" id="usersOneOrder">
+		<id column="userName" property="userName"></id>
+		<result column="pwd" property="pwd" />
+		<result column="regName" property="regName" />
+		<result column="regAge" property="regAge" />
+		<result column="regSex" property="regSex" />
+		<result column="regEmail" property="regEmail" />
+		<result column="regPhoto" property="regPhoto" />
+		<result column="regType" property="regType"></result>
+		<result column="loginTime" property="loginTime" />
+		<result column="tele" property="tele" />
+		<result column="regCity" property="regCity"></result>
+		<result column="regAddress" property="regAddress" />
+	</resultMap>
+	<select id="phoneOfOrder" resultMap="allPhones">
+		select phoneID,phoneName,phoneBrand,typeNumber,sellingPrice,purchasingPrice,phonePicture,phoneDetails,phoneFunction,phoneColor,remains,productTime,phoneState,supplierID
+		from phone where phoneID = #{phoneID}
+	</select>
+	<resultMap type="Phone" id="allPhones">
+		<id column="phoneID" property="phoneID"></id>
+		<result column="phoneName" property="phoneName" />
+		<result column="phoneBrand" property="phoneBrand" />
+		<result column="typeNumber" property="typeNumber" />
+		<result column="sellingPrice" property="sellingPrice" />
+		<result column="purchasingPrice" property="purchasingPrice" />
+		<result column="phonePicture" property="phonePicture" />
+		<result column="phoneDetails" property="phoneDetails"></result>
+		<result column="phoneFunction" property="phoneFunction" />
+		<result column="phoneColor" property="phoneColor" />
+		<result column="remains" property="remains" />
+		<result column="productTime" property="productTime"></result>
+		<result column="phoneState" property="phoneState" />
+		<result column="supplierID" property="supplierID" />
+		<association column="supplierID" property="supplier" javaType="Supplier" select="supplierOfPhones">
+		</association>
+	</resultMap>
+	<select id="supplierOfPhones" resultMap="supplierOfPhone">
+		select * from supplier where supplierID = #{supplierID}
+	</select>
+	<resultMap type="Supplier" id="supplierOfPhone">
+		<id column="supplierID" property="supplierID"></id>
+		<result column="supplierName" property="supplierName" />
+		<result column="supplierAddress" property="supplierAddress" />
+		<result column="tele" property="tele" />
+		<result column="principal" property="principal" />
+		<result column="supplierDetails" property="supplierDetails" />
+		<result column="registTime" property="registTime" />
+	</resultMap>
+	<select id="selectAllReceivers" resultMap="receiverOfOrder">
+		select receiverID,phoneID,receiverName,receiverTele,receiverCity,receiverAddress,receiverEmail
+		from receiver where receiverID = #{receiverID}
+	</select>
+	<resultMap type="Receiver" id="receiverOfOrder">
+		<id column="receiverID" property="receiverID"></id>
+		<result column="phoneID" property="phoneID" />
+		<result column="receiverName" property="receiverName" />
+		<result column="receiverTele" property="receiverTele" />
+		<result column="receiverCity" property="receiverCity" />
+		<result column="receiverAddress" property="receiverAddress" />
+		<result column="receiverEmail" property="receiverEmail" />
+	</resultMap>
+	
+
+
+	<!-- 根据订单ID查询订单 -->
+	<select resultMap="allOrders" parameterType="java.lang.String"
+		id="selectOrderByOrderID">
+		select
+		orderID,phoneID,supplierID,userName,receiverID,orderCount,orderState,paymentState,orderTime,totalPrice,transPrice,orderDetails
+		from `order`
+		where orderID = #{orderID}
+	</select>
+	
+	<!-- 查询一个用户的所有订单 -->
+	<select resultMap="allOrders" parameterType="java.lang.String"
+		id="selectOrdersOfOneUser">
+		select
+		orderID,phoneID,supplierID,userName,receiverID,orderCount,orderState,paymentState,orderTime,totalPrice,transPrice,orderDetails
+		from `order`
+		where userName = #{userName}
+	</select>
+	
+	<!-- 根据商品查询订单 -->
+	<select resultMap="allOrders" parameterType="java.lang.String"
+		id="selectOrdersOfOnePhone">
+		select
+		orderID,phoneID,supplierID,userName,receiverID,orderCount,orderState,paymentState,orderTime,totalPrice,transPrice,orderDetails
+		from `order`
+		where phoneID = #{phoneID}
+	</select>
+	
+	<!-- 一个供货商的所有订单 -->
+	<select resultMap="allOrders" parameterType="java.lang.String"
+		id="selectOrdersOfOneSupplier">
+		select
+		orderID,phoneID,supplierID,userName,receiverID,orderCount,orderState,paymentState,orderTime,totalPrice,transPrice,orderDetails
+		from `order`
+		where supplierID = #{supplierID}
+	</select>
+	
+
+	<!-- 编辑、修改订单 -->
+	<update id="updateOrder">
+		update `order`
+		<set>
+			<if test="orderID !=null">
+				orderID=#{orderID},
+			</if>
+			<if test="phoneID !=null">
+				phoneID=#{phoneID},
+			</if>
+			<if test="supplierID !=null">
+				supplierID=#{supplierID},
+			</if>
+			<if test="userName !=null">
+				userName=#{userName},
+			</if>
+			<if test="receiverID !=null">
+				receiverID=#{receiverID},
+			</if>
+			<if test="orderCount !=null">
+				orderCount=#{orderCount},
+			</if>
+			<if test="orderState !=null">
+				orderState=#{orderState},
+			</if>
+			<if test="paymentState !=null">
+				paymentState=#{paymentState},
+			</if>
+			<if test="orderTime !=null">
+				orderTime=#{orderTime},
+			</if>
+			<if test="totalPrice !=null">
+				totalPrice=#{totalPrice},
+			</if>
+			<if test="transPrice !=null">
+				transPrice=#{transPrice},
+			</if>
+			<if test="orderDetails !=null">
+				orderDetails=#{orderDetails},
+			</if>
+		</set>
+		where orderID =
+		#{orderID}
+	</update>
+
+</mapper>

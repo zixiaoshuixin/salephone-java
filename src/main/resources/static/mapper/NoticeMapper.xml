@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.NoticeMapper">
+
+<!-- 
+	int updateNotice(Notice notice);
+ -->
+
+	<!-- 发布公告 -->
+	<insert id="insertNotice" parameterType="Notice">
+		insert
+		into notice
+		(noticeID,noticeTitle,noticeText,publishTime,views,userName)
+		values(#{noticeID},#{noticeTitle},#{noticeText},#{publishTime},#{views},#{userName})
+	</insert>
+
+	<!-- 根据公告Id删除一篇公告 -->
+	<delete parameterType="java.lang.String" 
+			id="deleteNoticeByID">
+		delete from notice
+		where noticeID = #{noticeID}
+	</delete>
+
+	<!-- 对所有公告进行列表显示 -->
+	<select id="selectAllNotices" resultMap="allNotices">
+		select noticeID,noticeTitle,noticeText,publishTime,views,userName
+		from notice
+	</select>
+	<resultMap type="Notice" id="allNotices">
+		<id column="noticeID" property="noticeID"></id>
+		<result column="noticeTitle" property="noticeTitle" />
+		<result column="noticeText" property="noticeText" />
+		<result column="publishTime" property="publishTime" />
+		<result column="views" property="views" />
+		<result column="userName" property="userName" />
+		<association column="userName" property="register" javaType="Register" select="userOfNotice">
+		</association>
+	</resultMap>
+	<select id="userOfNotice" resultMap="usersOneNotice">
+		select * from register where userName = #{userName}
+	</select>
+	<resultMap type="Register" id="usersOneNotice">
+		<id column="userName" property="userName"></id>
+		<result column="pwd" property="pwd" />
+		<result column="regName" property="regName" />
+		<result column="regAge" property="regAge" />
+		<result column="regSex" property="regSex" />
+		<result column="regEmail" property="regEmail" />
+		<result column="regPhoto" property="regPhoto" />
+		<result column="regType" property="regType"></result>
+		<result column="loginTime" property="loginTime" />
+		<result column="tele" property="tele" />
+		<result column="regCity" property="regCity"></result>
+		<result column="regAddress" property="regAddress" />
+	</resultMap>
+
+
+	<!-- 根据公告ID查看公告内容及发表公告的用户信息 -->
+	<select resultMap="allNotices" parameterType="java.lang.String"
+		id="selectNoticeByID">
+		select
+		noticeID,noticeTitle,noticeText,publishTime,views,userName
+		from notice
+		where noticeID = #{noticeID}
+	</select>
+	<!-- 根据公告标题查看公告内容及发表公告的用户信息 -->
+	<select resultMap="allNotices" parameterType="java.lang.String"
+		id="selectNoticesByNoticeTitle">
+		select
+		noticeID,noticeTitle,noticeText,publishTime,views,userName
+		from notice
+		where noticeTitle = #{noticeTitle}
+	</select>
+	
+
+	<!-- 编辑、修改公告 -->
+	<update id="updateNotice">
+		update notice
+		<set>
+			<if test="noticeID !=null">
+				noticeID=#{noticeID},
+			</if>
+			<if test="noticeTitle !=null">
+				noticeTitle=#{noticeTitle},
+			</if>
+			<if test="noticeText !=null">
+				noticeText=#{noticeText},
+			</if>
+			<if test="publishTime !=null">
+				publishTime=#{publishTime},
+			</if>
+			<if test="views !=null">
+				views=#{views},
+			</if>
+			<if test="userName !=null">
+				userName=#{userName},
+			</if>
+		</set>
+		where noticeID =
+		#{noticeID}
+	</update>
+
+	<!-- 查看某一用户发布的所有公告 -->
+	<select id="selectAllNoticesOfOneUser"
+		parameterType="java.lang.String" resultMap="allNotices">
+		select
+		noticeID,noticeTitle,noticeText,publishTime,views,userName
+		from
+		notice
+		where userName = #{userName}
+	</select>
+
+</mapper>

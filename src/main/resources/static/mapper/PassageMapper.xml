@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.PassageMapper">
+
+	<!-- 发布文章 -->
+	<insert id="insertPassage" parameterType="Passage">
+		insert
+		into passages
+		(postID,postTitle,postText,postPageviews,postAudio,postTime,postPageSupport,lastCmTime,userName)
+		values(#{postID},#{postTitle},#{postText},#{postPageviews},#{postAudio},#{postTime},#{postPageSupport},#{lastCmTime},#{userName})
+	</insert>
+
+	<!-- 根据文章Id删除一篇文章 -->
+	<delete parameterType="java.lang.String" 
+			id="deletePassageById">
+		delete from passages
+		where postID = #{postID}
+	</delete>
+
+	<!-- 对所有文章进行列表显示 -->
+	<select id="selectAllPassages" resultMap="allPassages">
+		select postID,postTitle,postText,postPageviews,postAudio,postTime,postPageSupport,lastCmTime,userName
+		from passages
+	</select>
+	<resultMap type="Passage" id="allPassages">
+		<id column="postID" property="postID"></id>
+		<result column="postTitle" property="postTitle" />
+		<result column="postText" property="postText" />
+		<result column="postPageviews" property="postPageviews" />
+		<result column="postAudio" property="postAudio" />
+		<result column="postTime" property="postTime" />
+		<result column="postPageSupport" property="postPageSupport" />
+		<result column="lastCmTime" property="lastCmTime"></result>
+		<result column="userName" property="userName" />
+		<association column="userName" property="user" javaType="User" select="userOfPassage">
+		</association>
+	</resultMap>
+	<select id="userOfPassage" resultMap="usersOnePassage">
+		select * from users where userName = #{userName}
+	</select>
+	<resultMap type="User" id="usersOnePassage">
+		<id column="userName" property="userName"></id>
+		<result column="pwd" property="pwd" />
+		<result column="regAge" property="regAge" />
+		<result column="regSex" property="regSex" />
+		<result column="regEmail" property="regEmail" />
+		<result column="regPhoto" property="regPhoto" />
+		<result column="userType" property="userType" />
+		<result column="regTime" property="regTime" />
+		<result column="loginTime" property="loginTime" />
+	</resultMap>
+
+
+	<!-- 根据文章ID查看文章内容及发表文章的用户信息 -->
+	<select resultMap="passageWithPostID" parameterType="java.lang.String"
+		id="selectPassageById">
+		select
+		postID,postTitle,postText,postPageviews,postAudio,postTime,postPageSupport,lastCmTime,userName
+		from passages
+		where postID = #{postID}
+	</select>
+	<resultMap type="Passage" id="passageWithPostID">
+		<id column="postID" property="postID"></id>
+		<result column="postTitle" property="postTitle" />
+		<result column="postText" property="postText" />
+		<result column="postPageviews" property="postPageviews" />
+		<result column="postAudio" property="postAudio" />
+		<result column="postTime" property="postTime" />
+		<result column="postPageSupport" property="postPageSupport" />
+		<result column="lastCmTime" property="lastCmTime"></result>
+		<result column="userName" property="userName" />
+		<association column="userName" property="user" javaType="User" select="userOfPassage">
+		</association>
+	</resultMap>
+	
+
+	<!-- 编辑、修改文章 -->
+	<update id="updatePassage">
+		update passages set
+		postID = #{postID},
+		postTitle =
+		#{postTitle},
+		postText = #{postText},
+		postPageviews = #{postPageviews},
+		postAudio = #{postAudio},
+		postTime = #{postTime},
+		postPageSupport = #{postPageSupport},
+		lastCmTime = #{lastCmTime},
+		userName = #{userName}
+		where postID =
+		#{postID}
+	</update>
+
+	<!-- 我的文章：查看某一用户发布的所有文章 -->
+	<select id="selectPassagesOfOneUser"
+		parameterType="java.lang.String" resultMap="allPassagesOfOneUser">
+		select
+		postID,postTitle,postText,postPageviews,postAudio,postTime,postPageSupport,lastCmTime,userName
+		from
+		passages
+		where userName = #{userName}
+	</select>
+	<resultMap type="Passage" id="allPassagesOfOneUser">
+		<id column="postID" property="postID"></id>
+		<result column="postTitle" property="postTitle" />
+		<result column="postText" property="postText" />
+		<result column="postPageviews" property="postPageviews" />
+		<result column="postAudio" property="postAudio" />
+		<result column="postTime" property="postTime" />
+		<result column="postPageSupport" property="postPageSupport" />
+		<result column="lastCmTime" property="lastCmTime"></result>
+		<result column="userName" property="userName" />
+	</resultMap>
+	
+	<select resultType="User" parameterType="java.lang.String" id="selectUserByUserName">
+		select * from users where userName = #{userName}
+	</select>
+
+</mapper>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.RepositoryMapper">
+
+	<!-- 新增仓库 -->
+	<insert id="insertRepository" parameterType="Repository">
+		insert
+		into repository
+		(reposID,reposName,remains,reposDetails,supplierID)
+		values(#{reposID},#{reposName},#{remains},#{reposDetails},#{supplierID})
+	</insert>
+
+	<!-- 根据仓库Id删除仓库 -->
+	<delete parameterType="java.lang.String" 
+			id="deleteRepositoryByRepositoryID">
+		delete from repository
+		where reposID = #{reposID}
+	</delete>
+
+	<!-- 对所有仓库进行列表显示 -->
+	<select id="selectAllRepositories" resultMap="allRepositorys">
+		select reposID,reposName,remains,reposDetails,supplierID
+		from repository
+	</select>
+	<resultMap type="Repository" id="allRepositorys">
+		<id column="reposID" property="reposID"></id>
+		<result column="reposName" property="reposName" />
+		<result column="remains" property="remains" />
+		<result column="reposDetails" property="reposDetails" />
+		<result column="supplierID" property="supplierID" />
+		<association column="supplierID" property="supplier" javaType="Supplier" select="supplierOfRepository">
+		</association>
+	</resultMap>
+	<select id="supplierOfRepository" resultMap="suppliersOfRepository">
+		select * from supplier where supplierID = #{supplierID}
+	</select>
+	<resultMap type="Supplier" id="suppliersOfRepository">
+		<id column="supplierID" property="supplierID"></id>
+		<result column="supplierName" property="supplierName" />
+		<result column="supplierAddress" property="supplierAddress" />
+		<result column="tele" property="tele" />
+		<result column="principal" property="principal" />
+		<result column="supplierDetails" property="supplierDetails" />
+		<result column="registTime" property="registTime" />
+	</resultMap>
+	
+
+
+	<!-- 根据仓库ID查看仓库库存信息 -->
+	<select resultMap="allRepositorys" parameterType="java.lang.String"
+		id="selectRepositoryByRepositoryID">
+		select
+		reposID,reposName,remains,reposDetails,supplierID
+		from repository
+		where reposID = #{reposID}
+	</select>
+	
+
+	<!-- 编辑、修改仓库 -->
+	<update id="updateRepository">
+		update repository
+		<set>
+			<if test="reposID !=null">
+				reposID=#{reposID},
+			</if>
+			<if test="reposName !=null">
+				reposName=#{reposName},
+			</if>
+			<if test="remains !=null">
+				remains=#{remains},
+			</if>
+			<if test="reposDetails !=null">
+				reposDetails=#{reposDetails},
+			</if>
+			<if test="supplierID !=null">
+				supplierID=#{supplierID},
+			</if>
+		</set>
+		where reposID =
+		#{reposID}
+	</update>
+	
+	<update id="handlerPhonePurchase">
+		update phone
+		set remains = phone.remains + #{purchaseCount}
+		where phoneID =
+		#{phoneID}
+	</update>
+	
+	<update id="handlePhoneSale">
+		update phone
+		set remains = phone.remains - #{saleCount}
+		where phoneID =
+		#{phoneID}
+	</update>
+	
+
+	<!-- 我的仓库：查看某一用户发布的所有仓库 -->
+<!-- 	<select id="selectRepositorysOfOneUser" -->
+<!-- 		parameterType="java.lang.String" resultMap="allRepositorysOfOneUser"> -->
+<!-- 		select -->
+<!-- 		reposID,reposName,remains,reposDetails,supplierID -->
+<!-- 		from -->
+<!-- 		repository -->
+<!-- 		where userName = #{userName} -->
+<!-- 	</select> -->
+
+</mapper>

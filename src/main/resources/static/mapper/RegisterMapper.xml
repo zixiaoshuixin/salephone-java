@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.RegisterMapper">
+
+	<!-- 注册 -->
+	<insert id="regist" parameterType="Register">
+		insert
+		into register
+		(userName,pwd,regName,regAge,regSex,regEmail,regPhoto,regType,loginTime,tele,regCity,regAddress)
+		values(#{userName},#{pwd},#{regName},#{regAge},#{regSex},#{regEmail},#{regPhoto},#{regType},#{loginTime},#{tele},#{regCity},#{regAddress})
+	</insert>
+	
+	<!-- 判断用户是否存在 -->
+	<select id="isExist" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		select count(*) from register where userName = #{userName}
+	</select>
+	
+	<!-- 登录 -->
+	<select resultMap="allRegisters"
+		parameterType="Register" id="login">
+		select
+		userName,pwd,regName,regAge,regSex,regEmail,regPhoto,regType,loginTime,tele,regCity,regAddress
+		from register
+		where userName = #{userName} and pwd = #{pwd}
+	</select>
+
+	<!-- 注销用户 -->
+	<delete parameterType="java.lang.String" id="deleteRegister">
+		delete from register
+		where userName = #{userName}
+	</delete>
+
+	<!-- 查询所有用户 -->
+	<select id="selectAllRegisters" resultMap="allRegisters">
+		select
+		userName,pwd,regName,regAge,regSex,regEmail,regPhoto,regType,loginTime,tele,regCity,regAddress
+		from register
+	</select>
+	<resultMap type="Register" id="allRegisters">
+		<id column="userName" property="userName"></id>
+		<result column="pwd" property="pwd" />
+		<result column="regName" property="regName" />
+		<result column="regAge" property="regAge" />
+		<result column="regSex" property="regSex" />
+		<result column="regEmail" property="regEmail" />
+		<result column="regPhoto" property="regPhoto" />
+		<result column="regType" property="regType"></result>
+		<result column="loginTime" property="loginTime" />
+		<result column="tele" property="tele" />
+		<result column="regCity" property="regCity"></result>
+		<result column="regAddress" property="regAddress" />
+	</resultMap>
+
+	<!-- 查询所有管理员用户 -->
+	<select id="selectAllAdmin" resultMap="allRegisters">
+		select
+		userName,pwd,regName,regAge,regSex,regEmail,regPhoto,regType,loginTime,tele,regCity,regAddress
+		from register
+		where regType = 1
+	</select>
+	<!-- 查询所有普通用户 -->
+	<select id="selectAllCommon" resultMap="allRegisters">
+		select
+		userName,pwd,regName,regAge,regSex,regEmail,regPhoto,regType,loginTime,tele,regCity,regAddress
+		from register
+		where regType = 0
+	</select>
+
+
+	<!-- 根据用户名查询用户 -->
+	<select resultMap="allRegisters"
+		parameterType="java.lang.String" id="selectRegisterByUserName">
+		select
+		userName,pwd,regName,regAge,regSex,regEmail,regPhoto,regType,loginTime,tele,regCity,regAddress
+		from register
+		where userName = #{userName}
+	</select>
+
+
+	<!-- 修改用户信息 -->
+	<update id="updateRegister">
+		update register
+		<set>
+			<if test="userName !=null">
+				userName=#{userName},
+			</if>
+			<if test="pwd !=null">
+				pwd=#{pwd},
+			</if>
+			<if test="regName !=null">
+				regName=#{regName},
+			</if>
+			<if test="regAge !=null">
+				regAge=#{regAge},
+			</if>
+			<if test="regSex !=null">
+				regSex=#{regSex},
+			</if>
+			<if test="regEmail !=null">
+				regEmail=#{regEmail},
+			</if>
+			<if test="regPhoto !=null">
+				regPhoto=#{regPhoto},
+			</if>
+			<if test="regType !=null">
+				regType=#{regType},
+			</if>
+			<if test="loginTime !=null">
+				loginTime=#{loginTime},
+			</if>
+			<if test="tele !=null">
+				tele=#{tele},
+			</if>
+			<if test="regCity !=null">
+				regCity=#{regCity},
+			</if>
+			<if test="regAddress !=null">
+				regAddress=#{regAddress},
+			</if>
+		</set>
+		where userName = #{userName}
+	</update>
+
+	
+
+</mapper>

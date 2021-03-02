@@ -1,0 +1,105 @@
+package com.example.dto;
+
+public class ReceiverDTO {
+	/**
+	 * 收货人标识符
+	 */
+	private String receiverID;
+	
+	/**
+	 * 收货人收到商品标识符
+	 */
+	private String phoneID;
+	
+	/**
+	 * 收货人姓名
+	 */
+	private String receiverName;
+	
+	/**
+	 * 收货人电话
+	 */
+	private String receiverTele;
+	
+	/**
+	 * 收货人收货城市
+	 */
+	private String receiverCity;
+	
+	/**
+	 * 收货人收货详细地址
+	 */
+	private String receiverAddress;
+	
+	/**
+	 * 收货人邮箱
+	 */
+	private String receiverEmail;
+
+	public String getReceiverID() {
+		return receiverID;
+	}
+
+	public void setReceiverID(String receiverID) {
+		this.receiverID = receiverID;
+	}
+
+	public String getPhoneID() {
+		return phoneID;
+	}
+
+	public void setPhoneID(String phoneID) {
+		this.phoneID = phoneID;
+	}
+
+	public String getReceiverName() {
+		return receiverName;
+	}
+
+	public void setReceiverName(String receiverName) {
+		this.receiverName = receiverName;
+	}
+
+	public String getReceiverTele() {
+		return receiverTele;
+	}
+
+	public void setReceiverTele(String receiverTele) {
+		this.receiverTele = receiverTele;
+	}
+
+	public String getReceiverCity() {
+		return receiverCity;
+	}
+
+	public void setReceiverCity(String receiverCity) {
+		this.receiverCity = receiverCity;
+	}
+
+	public String getReceiverAddress() {
+		return receiverAddress;
+	}
+
+	public void setReceiverAddress(String receiverAddress) {
+		this.receiverAddress = receiverAddress;
+	}
+
+	public String getReceiverEmail() {
+		return receiverEmail;
+	}
+
+	public void setReceiverEmail(String receiverEmail) {
+		this.receiverEmail = receiverEmail;
+	}
+
+	@Override
+	public String toString() {
+		return "ReceiverDTO [receiverID=" + receiverID + ", phoneID=" + phoneID + ", receiverName=" + receiverName
+				+ ", receiverTele=" + receiverTele + ", receiverCity=" + receiverCity + ", receiverAddress="
+				+ receiverAddress + ", receiverEmail=" + receiverEmail + "]";
+	}
+	
+	
+	
+
+}

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.SellingMapper">
+	<!-- 新增销售记录 -->
+	<insert id="insertSelling" parameterType="Selling">
+		insert
+		into selling
+		(sellID,phoneID,phoneBrand,supplierID,userName,sellCount,profit,totalPrice,sellTime,receiveState)
+		values(#{sellID},#{phoneID},#{phoneBrand},#{supplierID},#{userName},#{sellCount},#{profit},#{totalPrice},#{sellTime},#{receiveState})
+	</insert>
+
+
+	<!-- 对所有销售记录进行列表显示 -->
+	<select id="selectAllSellings" resultMap="allSellings">
+		select sellID,phoneID,phoneBrand,supplierID,userName,sellCount,profit,totalPrice,sellTime,receiveState
+		from selling
+	</select>
+	<resultMap type="Selling" id="allSellings">
+		<id column="sellID" property="sellID"></id>
+		<result column="phoneID" property="phoneID" />
+		<result column="phoneBrand" property="phoneBrand" />
+		<result column="supplierID" property="supplierID" />
+		<result column="userName" property="userName" />
+		<result column="sellCount" property="sellCount" />
+		<result column="profit" property="profit" />
+		<result column="totalPrice" property="totalPrice"></result>
+		<result column="sellTime" property="sellTime" />
+		<result column="receiveState" property="receiveState" />
+		<association column="phoneID" property="phone" javaType="Phone" select="phoneOfSelling">
+		</association>
+		<association column="userName" property="register" javaType="Register" select="userOfOrder">
+		</association>
+		<association column="supplierID" property="supplier" javaType="Supplier" select="supplierOfPhones">
+		</association>
+	</resultMap>
+	<select id="phoneOfSelling" resultMap="phonesOneSelling">
+		select * from phone where phoneID = #{phoneID}
+	</select>
+	<resultMap type="phone" id="phonesOneSelling">
+		<id column="phoneID" property="phoneID"></id>
+		<result column="phoneName" property="phoneName" />
+		<result column="phoneBrand" property="phoneBrand" />
+		<result column="typeNumber" property="typeNumber" />
+		<result column="sellingPrice" property="sellingPrice" />
+		<result column="purchasingPrice" property="purchasingPrice" />
+		<result column="phonePicture" property="phonePicture" />
+		<result column="phoneDetails" property="phoneDetails"></result>
+		<result column="phoneFunction" property="phoneFunction" />
+		<result column="phoneColor" property="phoneColor" />
+		<result column="remains" property="remains" />
+		<result column="productTime" property="productTime"></result>
+		<result column="phoneState" property="phoneState" />
+		<result column="supplierID" property="supplierID" />
+		<association column="supplierID" property="supplier" javaType="Supplier" select="supplierOfPhones">
+		</association>
+	</resultMap>
+	<select id="supplierOfPhones" resultMap="supplierOnePhone">
+		select * from supplier where supplierID = #{supplierID}
+	</select>
+	<resultMap type="Supplier" id="supplierOnePhone">
+		<id column="supplierID" property="supplierID"></id>
+		<result column="supplierName" property="supplierName" />
+		<result column="supplierAddress" property="supplierAddress" />
+		<result column="tele" property="tele" />
+		<result column="principal" property="principal" />
+		<result column="supplierDetails" property="supplierDetails" />
+		<result column="registTime" property="registTime" />
+	</resultMap>
+	<select id="userOfOrder" resultMap="usersOneSelling">
+		select * from register where userName = #{userName}
+	</select>
+	<resultMap type="Register" id="usersOneSelling">
+		<id column="userName" property="userName"></id>
+		<result column="pwd" property="pwd" />
+		<result column="regName" property="regName" />
+		<result column="regAge" property="regAge" />
+		<result column="regSex" property="regSex" />
+		<result column="regEmail" property="regEmail" />
+		<result column="regPhoto" property="regPhoto" />
+		<result column="regType" property="regType"></result>
+		<result column="loginTime" property="loginTime" />
+		<result column="tele" property="tele" />
+		<result column="regCity" property="regCity"></result>
+		<result column="regAddress" property="regAddress" />
+	</resultMap>
+
+
+	<!-- 根据销售商品类型(品牌)查看销售记录 -->
+	<select resultMap="allSellings" parameterType="java.lang.String"
+		id="selectSellingsOfOnePhone">
+		select
+		sellID,phoneID,phoneBrand,supplierID,userName,sellCount,profit,totalPrice,sellTime,receiveState
+		from selling
+		where phoneBrand = #{phoneBrand}
+	</select>
+	
+	<!-- 根据销售记录ID查看销售记录 -->
+	<select resultMap="allSellings" parameterType="java.lang.String"
+		id="selectSellingBySellID">
+		select
+		sellID,phoneID,phoneBrand,supplierID,userName,sellCount,profit,totalPrice,sellTime,receiveState
+		from selling
+		where sellID = #{sellID}
+	</select>
+	
+	<!-- 查询一个供货商的所有销售记录 -->
+	<select resultMap="allSellings" parameterType="java.lang.String"
+		id="selectSellingsOfOneSupplier">
+		select
+		sellID,phoneID,phoneBrand,supplierID,userName,sellCount,profit,totalPrice,sellTime,receiveState
+		from selling
+		where supplierID = #{supplierID}
+	</select>
+
+	
+
+</mapper>

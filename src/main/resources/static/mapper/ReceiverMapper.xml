@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.ReceiverMapper">
+
+<!-- 
+
+	Receiver selectReceiverByID(String receiverID);
+	int updateReceiver(Receiver receiver);
+ -->
+	<!-- 新增收货人 -->
+	<insert id="insertReceiver" parameterType="Receiver">
+		insert
+		into receiver
+		(receiverID,phoneID,receiverName,receiverTele,receiverCity,receiverAddress,receiverEmail)
+		values(#{receiverID},#{phoneID},#{receiverName},#{receiverTele},#{receiverCity},#{receiverAddress},#{receiverEmail})
+	</insert>
+
+	<!-- 根据收货人Id删除收货人 -->
+	<delete parameterType="java.lang.String" 
+			id="deleteReceiverByID">
+		delete from receiver
+		where receiverID = #{receiverID}
+	</delete>
+
+	<!-- 对所有收货人进行列表显示,以及收货人收货商品、收货商品的供应商 -->
+	<select id="selectAllReceivers" resultMap="allReceivers">
+		select receiverID,phoneID,receiverName,receiverTele,receiverCity,receiverAddress,receiverEmail
+		from receiver
+	</select>
+	<resultMap type="Receiver" id="allReceivers">
+		<id column="receiverID" property="receiverID"></id>
+		<result column="phoneID" property="phoneID" />
+		<result column="receiverName" property="receiverName" />
+		<result column="receiverTele" property="receiverTele" />
+		<result column="receiverCity" property="receiverCity" />
+		<result column="receiverAddress" property="receiverAddress" />
+		<result column="receiverEmail" property="receiverEmail" />
+		<association column="phoneID" property="phone" javaType="Phone" select="userOfPhone">
+		</association>
+	</resultMap>
+	<select id="userOfPhone" resultMap="usersOnePhone">
+		select * from phone where phoneID = #{phoneID}
+	</select>
+	<resultMap type="Phone" id="usersOnePhone">
+		<id column="phoneID" property="phoneID"></id>
+		<result column="phoneName" property="phoneName" />
+		<result column="phoneBrand" property="phoneBrand" />
+		<result column="typeNumber" property="typeNumber" />
+		<result column="sellingPrice" property="sellingPrice" />
+		<result column="purchasingPrice" property="purchasingPrice" />
+		<result column="phonePicture" property="phonePicture" />
+		<result column="phoneDetails" property="phoneDetails"></result>
+		<result column="phoneFunction" property="phoneFunction" />
+		<result column="phoneColor" property="phoneColor" />
+		<result column="remains" property="remains" />
+		<result column="productTime" property="productTime"></result>
+		<result column="phoneState" property="phoneState" />
+		<result column="supplierID" property="supplierID" />
+		<association column="supplierID" property="supplier" javaType="Supplier" select="supplierOfPhones">
+		</association>
+	</resultMap>
+	<select id="supplierOfPhones" resultMap="supplierOnePhone">
+		select * from supplier where supplierID = #{supplierID}
+	</select>
+	<resultMap type="Supplier" id="supplierOnePhone">
+		<id column="supplierID" property="supplierID"></id>
+		<result column="supplierName" property="supplierName" />
+		<result column="supplierAddress" property="supplierAddress" />
+		<result column="tele" property="tele" />
+		<result column="principal" property="principal" />
+		<result column="supplierDetails" property="supplierDetails" />
+		<result column="registTime" property="registTime" />
+	</resultMap>
+
+
+	<!-- 根据文章ID查看文章内容及发表文章的用户信息 -->
+	<select resultMap="allReceivers" parameterType="java.lang.String"
+		id="selectReceiverByID">
+		select
+		receiverID,phoneID,receiverName,receiverTele,receiverCity,receiverAddress,receiverEmail
+		from receiver
+		where receiverID = #{receiverID}
+	</select>
+
+	<!-- 编辑、修改收货人信息 -->
+	<update id="updateReceiver">
+		update receiver
+		<set>
+			<if test="receiverID !=null">
+				receiverID=#{receiverID},
+			</if>
+			<if test="phoneID !=null">
+				phoneID=#{phoneID},
+			</if>
+			<if test="receiverName !=null">
+				receiverName=#{receiverName},
+			</if>
+			<if test="receiverTele !=null">
+				receiverTele=#{receiverTele},
+			</if>
+			<if test="receiverCity !=null">
+				receiverCity=#{receiverCity},
+			</if>
+			<if test="receiverAddress !=null">
+				receiverAddress=#{receiverAddress},
+			</if>
+			<if test="receiverEmail !=null">
+				receiverEmail=#{receiverEmail},
+			</if>
+		</set>
+		where receiverID =
+		#{receiverID}
+	</update>
+</mapper>

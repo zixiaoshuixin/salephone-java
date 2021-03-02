@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.CartMapper">
+	<!-- 发布购物车商品 -->
+	<insert id="insertCart" parameterType="Cart">
+		insert
+		into cart
+		(cartID,phoneID,phoneName,userName,supplierID,cartCount,cartTime,cartDetails)
+		values(#{cartID},#{phoneID},#{phoneName},#{userName},#{supplierID},#{cartCount},#{cartTime},#{cartDetails})
+	</insert>
+
+	<!-- 根据购物车商品Id删除一篇购物车商品 -->
+	<delete parameterType="java.lang.String" id="deleteCartByCartID">
+		delete from cart
+		where cartID = #{cartID}
+	</delete>
+
+	<!-- 对所有购物车商品进行列表显示 -->
+	<select id="selectAllCarts" resultMap="allCarts">
+		select
+		cartID,phoneID,phoneName,userName,supplierID,cartCount,cartTime,cartDetails
+		from cart
+	</select>
+	<resultMap type="Cart" id="allCarts">
+		<id column="cartID" property="cartID"></id>
+		<result column="phoneID" property="phoneID"></result>
+		<result column="phoneName" property="phoneName" />
+		<result column="userName" property="userName" />
+		<result column="supplierID" property="supplierID" />
+		<result column="cartCount" property="cartCount" />
+		<result column="cartTime" property="cartTime" />
+		<result column="cartDetails" property="cartDetails" />
+		<association column="phoneID" property="phone"
+			javaType="Phone" select="phoneOfCart">
+		</association>
+		<association column="userName" property="register"
+			javaType="Register" select="userOfCart">
+		</association>
+		<association column="supplierID" property="supplier"
+			javaType="Supplier" select="userOfSupplier">
+		</association>
+	</resultMap>
+	<select id="phoneOfCart" resultMap="allPhones">
+		select * from phone where
+		phoneID = #{phoneID}
+	</select>
+	<resultMap type="Phone" id="allPhones">
+		<id column="phoneID" property="phoneID"></id>
+		<result column="phoneName" property="phoneName" />
+		<result column="phoneBrand" property="phoneBrand" />
+		<result column="typeNumber" property="typeNumber" />
+		<result column="sellingPrice" property="sellingPrice" />
+		<result column="purchasingPrice" property="purchasingPrice" />
+		<result column="phonePicture" property="phonePicture" />
+		<result column="phoneDetails" property="phoneDetails"></result>
+		<result column="phoneFunction" property="phoneFunction" />
+		<result column="phoneColor" property="phoneColor" />
+		<result column="remains" property="remains" />
+		<result column="productTime" property="productTime"></result>
+		<result column="phoneState" property="phoneState" />
+		<result column="supplierID" property="supplierID" />
+		<result column="reposID" property="reposID" />
+	</resultMap>
+	<select id="userOfCart" resultMap="allRegisters">
+		select * from register where
+		userName = #{userName}
+	</select>
+	<resultMap type="Register" id="allRegisters">
+		<id column="userName" property="userName"></id>
+		<result column="pwd" property="pwd" />
+		<result column="regName" property="regName" />
+		<result column="regAge" property="regAge" />
+		<result column="regSex" property="regSex" />
+		<result column="regEmail" property="regEmail" />
+		<result column="regPhoto" property="regPhoto" />
+		<result column="regType" property="regType"></result>
+		<result column="loginTime" property="loginTime" />
+		<result column="tele" property="tele" />
+		<result column="regCity" property="regCity"></result>
+		<result column="regAddress" property="regAddress" />
+	</resultMap>
+	<select id="userOfSupplier" resultMap="allSuppliers">
+		select * from supplier
+		where supplierID = #{supplierID}
+	</select>
+	<resultMap type="Supplier" id="allSuppliers">
+		<id column="supplierID" property="supplierID"></id>
+		<result column="supplierName" property="supplierName" />
+		<result column="supplierAddress" property="supplierAddress" />
+		<result column="tele" property="tele" />
+		<result column="principal" property="principal" />
+		<result column="supplierDetails" property="supplierDetails" />
+		<result column="registTime" property="registTime" />
+	</resultMap>
+
+
+	<!-- 根据购物车商品ID查看购物车商品内容及发表购物车商品的用户信息 -->
+	<select resultMap="allCarts" parameterType="java.lang.String"
+		id="selectCartByCartID">
+		select
+		cartID,phoneID,phoneName,userName,supplierID,cartCount,cartTime,cartDetails
+		from cart
+		where cartID = #{cartID}
+	</select>
+
+
+
+	<!-- 编辑、修改购物车商品 -->
+	<update id="updateCart">
+		update cart
+		<set>
+			<if test="cartID !=null">
+				cartID=#{cartID},
+			</if>
+			<if test="phoneID !=null">
+				phoneID=#{phoneID},
+			</if>
+			<if test="phoneName !=null">
+				phoneName=#{phoneName},
+			</if>
+			<if test="userName !=null">
+				userName=#{userName},
+			</if>
+			<if test="supplierID !=null">
+				supplierID=#{supplierID},
+			</if>
+			<if test="cartCount !=null">
+				cartCount=#{cartCount},
+			</if>
+			<if test="cartTime !=null">
+				cartTime=#{cartTime},
+			</if>
+			<if test="cartDetails !=null">
+				cartDetails=#{cartDetails},
+			</if>
+		</set>
+
+		where cartID =
+		#{cartID}
+	</update>
+
+	<!-- 我的购物车商品：查看某一用户的所有购物车商品 -->
+	<select id="selectCartsOfOneUser"
+		parameterType="java.lang.String" resultMap="allCarts">
+		select
+		cartID,phoneID,phoneName,userName,supplierID,cartCount,cartTime,cartDetails
+		from
+		cart
+		where userName = #{userName}
+	</select>
+
+</mapper>
